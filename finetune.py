@@ -11,7 +11,6 @@ from peft import LoraConfig, get_peft_model, TaskType
 import setup
 import dataset
 
-transformers.utils.logging.disable_progress_bar()
 
 MODEL_NAME = "distilbert-base-uncased"
 DATASET_NAME = "sst2"
@@ -44,6 +43,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
       logging_steps=10,
       report_to=["tensorboard"],
       # fp16=torch.cuda.is_available(),
+      disable_tqdm=True,
     )
 
     trainer = Trainer(
