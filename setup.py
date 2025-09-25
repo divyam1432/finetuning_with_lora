@@ -4,6 +4,7 @@ import sys
 
 def setup_environment():
     # Set environment variable
+    print('Setting up Environment')
     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
     # Install packages

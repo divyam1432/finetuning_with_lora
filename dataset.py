@@ -4,6 +4,7 @@ from datasets import load_dataset
 from transformers import AutoTokenizer
 
 def get_train_val_split(model_name, dataset_name="sst2", train_split=500, eval_split=200):
+    print("Getting Train and Test splits.")
     dataset_raw = load_dataset("glue", dataset_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 

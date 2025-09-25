@@ -11,6 +11,8 @@ from peft import LoraConfig, get_peft_model, TaskType
 import setup
 import dataset
 
+transformers.utils.logging.disable_progress_bar()
+
 MODEL_NAME = "distilbert-base-uncased"
 DATASET_NAME = "sst2"
 LEARNING_RATE = 2e-5
@@ -55,6 +57,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
     return trainer
 
 def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split):
+    print('Starting Fine tuning.')
     model_full = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
     for layer in model_full.distilbert.transformer.layer:
         for param in layer.parameters():
