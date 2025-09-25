@@ -76,8 +76,8 @@ def define_args():
     parser.add_argument("--learning_rate", type=float, help="learning rate to use in finetuning", default=2e-5)
     parser.add_argument("--epochs", type=int, help="Number of epochs to use", default=3)
     parser.add_argument("--weight_decay", type=float, help="Regularize the weights", default=0.01)
-    parser.add_argument("--freeze_encoder", type=bool, help="Whether to freeze the encoder", default=True)
-    parser.add_argument("--sample_data", type=bool, help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval", default=True)
+    parser.add_argument("--freeze_encoder", action="store_true", help="Whether to freeze the encoder")
+    parser.add_argument("--sample_data", action="store_true", help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval")
     args = parser.parse_args()
     return args
 
