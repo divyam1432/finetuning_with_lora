@@ -71,7 +71,7 @@ def define_args():
     parser.add_argument("--dataset_name", type=str, help="Dataset to use", default="sst2")
     parser.add_argument("--learning_rate", type=float, help="learning rate to use in finetuning", default=2e-5)
     parser.add_argument("--epochs", type=int, help="Number of epochs to use", default=3)
-    parser.add_arguments("--weight_decay", type=float, help="Regularize the weights", default=0.01)
+    parser.add_argument("--weight_decay", type=float, help="Regularize the weights", default=0.01)
     args = parser.parse_args()
     return args
 
