@@ -3,27 +3,15 @@ import subprocess
 import sys
 
 import setup
+import dataset
 
-# def setup_environment():
-#     # Set environment variable
-#     os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
-#
-#     # Install packages
-#     packages = [
-#         "transformers",
-#         "datasets",
-#         "accelerate",
-#         "peft",
-#         "tensorboard",
-#         "scikit-learn",
-#     ]
-#
-#     print("Installing packages...")
-#     subprocess.check_call([sys.executable, "-m", "pip", "install", "-q"] + packages)
-#
-#     print("Setup complete. You can now run TensorBoard with:")
-#     print("    from torch.utils.tensorboard import SummaryWriter")
-#     print("    # or launch: tensorboard --logdir=runs")
+MODEL_NAME = "distilbert-base-uncased"
+DATASET_NAME = "sst2"
 
 if __name__ == "__main__":
     setup.setup_environment()
+    # Train split: 500
+    # eval split: 200
+    train_split, eval_split = dataset.get_train_val_split(model_name=MODEL_NAME, dataset_name=DATASET_NAME)
+    print("Train Data:", train_split.shape)
+    print("Eval Data:", eval_split.shape)
