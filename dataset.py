@@ -16,4 +16,4 @@ def get_train_val_split(model_name, dataset_name="sst2", train_split=500, eval_s
 
     train_dataset = dataset["train"].shuffle(seed=42).select(range(train_split))  # keep it small
     eval_dataset = dataset["validation"].select(range(eval_split))
-    return train_split, eval_split
+    return train_dataset, eval_dataset
