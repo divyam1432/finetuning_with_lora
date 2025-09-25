@@ -56,12 +56,13 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
     )
     return trainer
 
-def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split):
+def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split, freeze_encoder=True):
     print('Starting Fine tuning.')
     model_full = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
-    for layer in model_full.distilbert.transformer.layer:
-        for param in layer.parameters():
-            param.requires_grad = False
+    if freeze_encoder:
+        for layer in model_full.distilbert.transformer.layer:
+            for param in layer.parameters():
+                param.requires_grad = False
 
     print("Full FT: Trainable params:", sum(p.numel() for p in model_full.parameters() if p.requires_grad))
     tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -75,6 +76,8 @@ def define_args():
     parser.add_argument("--learning_rate", type=float, help="learning rate to use in finetuning", default=2e-5)
     parser.add_argument("--epochs", type=int, help="Number of epochs to use", default=3)
     parser.add_argument("--weight_decay", type=float, help="Regularize the weights", default=0.01)
+    parser.add_argument("--freeze_encoder", type=bool, help="Whether to freeze the encoder", default=True)
+    parser.add_argument("--sample_data", type=bool, help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval", default=True)
     args = parser.parse_args()
     return args
 
@@ -84,7 +87,7 @@ if __name__ == "__main__":
     setup.setup_environment()
     # Train split: 500
     # eval split: 200
-    train_split, eval_split = dataset.get_train_val_split(model_name=args.model_name, dataset_name=args.dataset_name)
+    train_split, eval_split = dataset.get_train_val_split(model_name=args.model_name, dataset_name=args.dataset_name, args.sample_data)
     print("Train Data:", train_split.shape)
     print("Eval Data:", eval_split.shape)
-    fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split)
+    fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, args.freeze_encoder)
