@@ -56,7 +56,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
     )
     return trainer
 
-def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split, freeze_encoder=True):
+def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split, freeze_encoder):
     print('Starting Fine tuning.')
     model_full = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
     if freeze_encoder:
