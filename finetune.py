@@ -90,4 +90,4 @@ if __name__ == "__main__":
     train_split, eval_split = dataset.get_train_val_split(model_name=args.model_name, dataset_name=args.dataset_name, sample_data=args.sample_data)
     print("Train Data:", train_split.shape)
     print("Eval Data:", eval_split.shape)
-    fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, args.freeze_encoder)
+    fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder)
