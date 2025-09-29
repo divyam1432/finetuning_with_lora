@@ -40,7 +40,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
       num_train_epochs=epochs,
       weight_decay=weight_decay,
       logging_dir=f"./logs/{run_name}",
-      logging_steps=10,
+      logging_steps=50,
       report_to=["tensorboard"],
       # fp16=torch.cuda.is_available(),
       disable_tqdm=True,
