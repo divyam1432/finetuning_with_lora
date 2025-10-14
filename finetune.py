@@ -7,6 +7,7 @@ import numpy as np
 
 import setup
 import dataset
+import adapters
 
 from sklearn.metrics import accuracy_score, f1_score
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, EvalPrediction, AutoTokenizer
