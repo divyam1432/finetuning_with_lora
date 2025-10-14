@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, EvalPrediction, AutoTokenizer
 from peft import LoraConfig, get_peft_model, TaskType
-from adapters import AutoAdapterModel, AdapterTrainer
+# from adapters import AutoAdapterModel, AdapterTrainer
 
 import setup
 import dataset
