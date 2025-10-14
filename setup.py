@@ -15,6 +15,7 @@ def setup_environment():
         "peft",
         "tensorboard",
         "scikit-learn",
+        "adapters",
     ]
 
     print("Installing packages...")
