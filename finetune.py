@@ -66,7 +66,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
             train_dataset=train_split,
             eval_dataset=eval_split,
             tokenizer=tokenizer,
-            compute_metrics=compute_metrics
+            compute_metrics=_compute_metrics
         )
     return trainer
 
