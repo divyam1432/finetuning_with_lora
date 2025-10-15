@@ -125,7 +125,7 @@ def fine_tune_with_adapters(
     total_trainable_params = sum(p.numel() for p in model_with_adapters.parameters() if p.requires_grad)
     print(f"Total trainable parameters: {total_trainable_params}")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    trainer = _train_and_eval(model_name, "adapter_ft", learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer, adapter_trainer=True)
+    trainer = _train_and_eval(model_with_adapters, "adapter_ft", learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer, adapter_trainer=True)
     trainer.train()
 
 
