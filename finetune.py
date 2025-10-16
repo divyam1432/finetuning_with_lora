@@ -38,7 +38,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
     args = TrainingArguments(
       output_dir=f"./results/{run_name}",
       eval_strategy="steps",
-      eval_steps=50
+      eval_steps=50,
       save_strategy="epoch",
       learning_rate=learning_rate,
       # warmup_ratio=0.1,
