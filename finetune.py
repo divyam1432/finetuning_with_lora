@@ -6,6 +6,7 @@ import torch
 import numpy as np
 
 import setup
+setup.setup_environment()
 import dataset
 
 from sklearn.metrics import accuracy_score, f1_score
@@ -151,7 +152,6 @@ def define_args():
 if __name__ == "__main__":
 
     args = define_args()
-    setup.setup_environment()
     # Train split: 500
     # eval split: 200
     train_split, eval_split = dataset.get_train_val_split(model_name=args.model_name, dataset_name=args.dataset_name, sample_data=args.sample_data)
