@@ -106,7 +106,8 @@ def fine_tune_with_adapters(
     number_of_adapters,
     reduction_factor,
     activation_function,
-    mh_adapter
+    mh_adapter,
+    logs_dir
 ):
     """This function is used to fine tune a model using adapters.
     Args:
@@ -119,6 +120,7 @@ def fine_tune_with_adapters(
         reduction_factor: Reduce the hidden dim size by this factor. Ref: https://docs.adapterhub.ml/methods.html#bottleneck-adapters.
         activation_function: activation function to be used in adapters.
         mh_adapter: Wether to add adapter block after multihead attention block for each layer.
+        logs_dir: Directory to save tensorboard logs.
     """
     print('Starting Fine tuning using Adapters')
     model_with_adapters = AutoAdapterModel.from_pretrained(model_name)
@@ -130,7 +132,7 @@ def fine_tune_with_adapters(
     total_trainable_params = sum(p.numel() for p in model_with_adapters.parameters() if p.requires_grad)
     print(f"Total trainable parameters: {total_trainable_params}")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    trainer = _train_and_eval(model_with_adapters, "adapter_ft", learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer, adapter_trainer=True)
+    trainer = _train_and_eval(model_with_adapters, logs_dir, learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer, adapter_trainer=True)
     trainer.train()
 
 
@@ -142,6 +144,7 @@ def define_args():
     parser.add_argument("--epochs", type=int, help="Number of epochs to use", default=3)
     parser.add_argument("--weight_decay", type=float, help="Regularize the weights", default=0.01)
     parser.add_argument("--sample_data", action="store_true", help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval")
+    parser.add_argument("--logs_dir", type=str, help="directory to save tenssorboard logs", default="finetuning")
     # SFT based arguments
     parser.add_argument("--perform_sft", action="store_true", help="Perform traditional Fine Tuning.")
     parser.add_argument("--freeze_encoder", action="store_true", help="Whether to freeze the encoder")
@@ -163,6 +166,6 @@ if __name__ == "__main__":
     print("Train Data:", train_split.shape)
     print("Eval Data:", eval_split.shape)
     if args.perform_sft:
-        fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder)
+        fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder, args.logs_dir)
     if args.use_adapters:
-        fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter)
+        fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter, args.logs_dir)
