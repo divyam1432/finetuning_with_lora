@@ -151,7 +151,7 @@ def define_args():
     # Adapters based arguments
     parser.add_argument("--use_adapters", action="store_true", help="Whether to perform finetuning using adapters.")
     parser.add_argument("--number_of_adapters", type=int, default=1, help="Number of adapters per transformer layer.")
-    parser.add_argument("--reduction_factor", type=int, default=16, help="Reduce the hidden diemnsions by this factor. For more details:https://docs.adapterhub.ml/methods.html#bottleneck-adapters")
+    parser.add_argument("--reduction_factor", type=float, default=16, help="Reduce the hidden diemnsions by this factor. For more details:https://docs.adapterhub.ml/methods.html#bottleneck-adapters")
     parser.add_argument("--activation_function", type=str, default="relu", help="Type of activation functions to use in adapter layer.")
     parser.add_argument("--mh_adapter", action="store_true", help="Add adapter module after multiheaded attention block of each layer.")
     args = parser.parse_args()
