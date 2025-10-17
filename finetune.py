@@ -12,7 +12,7 @@ import dataset
 from sklearn.metrics import accuracy_score, f1_score
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, TrainingArguments, Trainer, EvalPrediction, AutoTokenizer
 from peft import LoraConfig, get_peft_model, TaskType
-from adapters import AutoAdapterModel, AdapterTrainer
+from adapters import AutoAdapterModel, AdapterTrainer, BnConfig
 
 
 MODEL_NAME = "distilbert-base-uncased"
@@ -105,7 +105,8 @@ def fine_tune_with_adapters(
     eval_split,
     number_of_adapters,
     reduction_factor,
-    activation_function
+    activation_function,
+    mh_adapter
 ):
     """This function is used to fine tune a model using adapters.
     Args:
@@ -117,11 +118,13 @@ def fine_tune_with_adapters(
         eval_split: evaluate the model on this data.
         reduction_factor: Reduce the hidden dim size by this factor. Ref: https://docs.adapterhub.ml/methods.html#bottleneck-adapters.
         activation_function: activation function to be used in adapters.
+        mh_adapter: Wether to add adapter block after multihead attention block for each layer.
     """
     print('Starting Fine tuning using Adapters')
     model_with_adapters = AutoAdapterModel.from_pretrained(model_name)
+    config = BnConfig(mh_adapter=mh_adapter, output_adapter=True, reduction_factor=reduction_factor, non_linearity=activation_function)
     for i in range(number_of_adapters):
-        model_with_adapters.add_adapter(f"adapter_{i}")
+        model_with_adapters.add_adapter(f"adapter_{i}", config=config)
         model_with_adapters.train_adapter(f"adapter_{i}")
     model_with_adapters.add_classification_head("Custom_head", num_labels=2)
     total_trainable_params = sum(p.numel() for p in model_with_adapters.parameters() if p.requires_grad)
@@ -147,6 +150,7 @@ def define_args():
     parser.add_argument("--number_of_adapters", type=int, default=1, help="Number of adapters per transformer layer.")
     parser.add_argument("--reduction_factor", type=int, default=16, help="Reduce the hidden diemnsions by this factor. For more details:https://docs.adapterhub.ml/methods.html#bottleneck-adapters")
     parser.add_argument("--activation_function", type=str, default="relu", help="Type of activation functions to use in adapter layer.")
+    parser.add_argument("--mh_adapter", action="store_true", help="Add adapter module after multiheaded attention block of each layer.")
     args = parser.parse_args()
     return args
 
@@ -161,4 +165,4 @@ if __name__ == "__main__":
     if args.perform_sft:
         fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder)
     if args.use_adapters:
-        fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function)
+        fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter)
