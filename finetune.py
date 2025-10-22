@@ -72,7 +72,7 @@ def _train_and_eval(model, run_name, learning_rate, epochs, weight_decay, train_
         )
     return trainer
 
-def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split, freeze_encoder):
+def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval_split, freeze_encoder, logs_dir):
     """This function is used to finetune the given model using traditional SFT.
     Args:
         model_name: model to be used.
@@ -92,7 +92,7 @@ def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval
 
     print("Full FT: Trainable params:", sum(p.numel() for p in model_full.parameters() if p.requires_grad))
     tokenizer = AutoTokenizer.from_pretrained(model_name)
-    trainer = _train_and_eval(model_full, "full_ft", learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer)
+    trainer = _train_and_eval(model_full, logs_dir, learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer)
     trainer.train()
 
 
