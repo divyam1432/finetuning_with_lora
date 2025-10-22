@@ -86,7 +86,7 @@ def fine_tune(model_name, learning_rate, epochs, weight_decay, train_split, eval
     print('Starting Fine tuning.')
     model_full = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
     if freeze_encoder:
-        for layer in model_full.distilbert.transformer.layer:
+        for layer in model_full.distilbert.transformer.layer[:freeze_encoder]:
             for param in layer.parameters():
                 param.requires_grad = False
 
@@ -147,7 +147,7 @@ def define_args():
     parser.add_argument("--logs_dir", type=str, help="directory to save tenssorboard logs", default="finetuning")
     # SFT based arguments
     parser.add_argument("--perform_sft", action="store_true", help="Perform traditional Fine Tuning.")
-    parser.add_argument("--freeze_encoder", action="store_true", help="Whether to freeze the encoder")
+    parser.add_argument("--freeze_encoder_layer", type=int, help="Whether to freeze the encoder layers. If Non zero will freeze layers from bottom.", default=0)
     # Adapters based arguments
     parser.add_argument("--use_adapters", action="store_true", help="Whether to perform finetuning using adapters.")
     parser.add_argument("--number_of_adapters", type=int, default=1, help="Number of adapters per transformer layer.")
