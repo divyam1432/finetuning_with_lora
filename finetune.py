@@ -166,6 +166,6 @@ if __name__ == "__main__":
     print("Train Data:", train_split.shape)
     print("Eval Data:", eval_split.shape)
     if args.perform_sft:
-        fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder, args.logs_dir)
+        fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder_layer, args.logs_dir)
     if args.use_adapters:
         fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter, args.logs_dir)
