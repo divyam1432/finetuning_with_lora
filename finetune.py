@@ -185,16 +185,16 @@ def define_args():
     parser.add_argument("--sample_data", action="store_true", help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval")
     parser.add_argument("--logs_dir", type=str, help="directory to save tenssorboard logs", default="finetuning")
     # SFT based arguments
-    parser.add_argument("--perform_sft", action="store_false", help="Perform traditional Fine Tuning.")
+    parser.add_argument("--perform_sft", action="store_true", help="Perform traditional Fine Tuning.")
     parser.add_argument("--freeze_encoder_layer", type=int, help="Whether to freeze the encoder layers. If Non zero will freeze layers from bottom.", default=0)
     # Adapters based arguments
-    parser.add_argument("--use_adapters", action="store_false", help="Whether to perform finetuning using adapters.")
+    parser.add_argument("--use_adapters", action="store_true", help="Whether to perform finetuning using adapters.")
     parser.add_argument("--number_of_adapters", type=int, default=1, help="Number of adapters per transformer layer.")
     parser.add_argument("--reduction_factor", type=float, default=16, help="Reduce the hidden diemnsions by this factor. For more details:https://docs.adapterhub.ml/methods.html#bottleneck-adapters")
     parser.add_argument("--activation_function", type=str, default="relu", help="Type of activation functions to use in adapter layer.")
     parser.add_argument("--mh_adapter", action="store_true", help="Add adapter module after multiheaded attention block of each layer.")
     # Arguments for Lora based fine tuning.
-    parser.add_argument("--use_lora", action="store_false", help="Whether to finetune using LORA.")
+    parser.add_argument("--use_lora", action="store_true", help="Whether to finetune using LORA.")
     parser.add_argument("--matrices", nargs="+", help="List of matrices in a transformer layer on which to apply lora optimization. Supported arguments are `query`, `key`, `value`, `output`")
     parser.add_argument("--rank", type=int, default=1, help="Rank r used to factorize the matrix.")
     parser.add_argument("--alpha", type=int, default=8, help="Alpha scaling factor which controls the scale of weight changes to be applied.")
