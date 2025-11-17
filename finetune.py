@@ -172,7 +172,7 @@ def fine_tune_with_lora(
     model = get_peft_model(model_with_lora, lora_config)
     print(f"Total trainable parameters: {model.print_trainable_parameters()}")
     tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
-    trainer = _train_and_eval(model_full, logs_dir, learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer)
+    trainer = _train_and_eval(model, logs_dir, learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer)
     trainer.train()
 
 def define_args():
