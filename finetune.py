@@ -197,7 +197,7 @@ def define_args():
     parser.add_argument("--use_lora", action="store_false", help="Whether to finetune using LORA.")
     parser.add_argument("--matrices", nargs="*", help="List of matrices in a transformer layer on which to apply lora optimization. Supported arguments are `query`, `key`, `value`, `output`")
     parser.add_argument("--rank", type=int, default=1, help="Rank r used to factorize the matrix.")
-    parser.add_argument("--alpha", type=int, defult=8, help="Alpha scaling factor which controls the scale of weight changes to be applied.")
+    parser.add_argument("--alpha", type=int, default=8, help="Alpha scaling factor which controls the scale of weight changes to be applied.")
 
     args = parser.parse_args()
     return args
