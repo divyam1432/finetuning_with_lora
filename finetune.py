@@ -145,7 +145,8 @@ def fine_tune_with_lora(
     eval_split,
     matrices,
     rank,
-    alpha
+    alpha,
+    logs_dir
 ):
     """This function is used to fine tune a model using LORA.
     Args:
@@ -215,4 +216,4 @@ if __name__ == "__main__":
     if args.use_adapters:
         fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter, args.logs_dir)
     if args.use_lora:
-        fine_tune_with_lora(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.matrices, args.rank, args.alpha)
+        fine_tune_with_lora(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.matrices, args.rank, args.alpha, args.logs_dir)
