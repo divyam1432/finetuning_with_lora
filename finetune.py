@@ -136,6 +136,45 @@ def fine_tune_with_adapters(
     trainer.train()
 
 
+def fine_tune_with_lora(
+    model_name,
+    learning_rate,
+    epochs,
+    weight_decay,
+    train_split,
+    eval_split,
+    matrices,
+    rank,
+    alpha
+):
+    """This function is used to fine tune a model using LORA.
+    Args:
+        model_name: model to be used.
+        learning_rate: learning rate to be used in training.
+        epochs: Number of epochs to be used.
+        weight_decay: weight decay to used in training.
+        train_split: train the model on this data.
+        eval_split: evaluate the model on this data.
+        matrices: Target matix in transformer layer to apply lora.
+        rank: Rank r used to decomapose matrix.
+        alphs: scaling factor.
+    """
+    print('Starting Fine tuning using LORA')
+    model_with_adapters = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=2)
+    lora_config = LoraConfig(
+        r=rank,
+        lora_alpha=alpha,
+        target_modules=matrices,
+        lora_dropout=0.1,
+        bias="none",
+        task_type=TaskType.SEQ_CLS
+    )
+    model = get_peft_model(model, lora_config)
+    print(f"Total trainable parameters: {model.print_trainable_parameters()}")
+    tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+    trainer = _train_and_eval(model_full, logs_dir, learning_rate, epochs, weight_decay, train_split, eval_split, tokenizer)
+    trainer.train()
+
 def define_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_name", type=str, help="Model to use", default="distilbert-base-uncased")
@@ -146,14 +185,20 @@ def define_args():
     parser.add_argument("--sample_data", action="store_true", help="Whether to sample data for training and eval. If True will sample 500 samples for training and 200 samples for eval")
     parser.add_argument("--logs_dir", type=str, help="directory to save tenssorboard logs", default="finetuning")
     # SFT based arguments
-    parser.add_argument("--perform_sft", action="store_true", help="Perform traditional Fine Tuning.")
+    parser.add_argument("--perform_sft", action="store_false", help="Perform traditional Fine Tuning.")
     parser.add_argument("--freeze_encoder_layer", type=int, help="Whether to freeze the encoder layers. If Non zero will freeze layers from bottom.", default=0)
     # Adapters based arguments
-    parser.add_argument("--use_adapters", action="store_true", help="Whether to perform finetuning using adapters.")
+    parser.add_argument("--use_adapters", action="store_false", help="Whether to perform finetuning using adapters.")
     parser.add_argument("--number_of_adapters", type=int, default=1, help="Number of adapters per transformer layer.")
     parser.add_argument("--reduction_factor", type=float, default=16, help="Reduce the hidden diemnsions by this factor. For more details:https://docs.adapterhub.ml/methods.html#bottleneck-adapters")
     parser.add_argument("--activation_function", type=str, default="relu", help="Type of activation functions to use in adapter layer.")
     parser.add_argument("--mh_adapter", action="store_true", help="Add adapter module after multiheaded attention block of each layer.")
+    # Arguments for Lora based fine tuning.
+    parser.add_arguments("--use_lora", action="store_false", help="Whether to finetune using LORA.")
+    parser.add_argument("--matrices", nargs="*", help="List of matrices in a transformer layer on which to apply lora optimization. Supported arguments are `query`, `key`, `value`, `output`")
+    parser.add_argument("--rank", type=int, default=1, help="Rank r used to factorize the matrix.")
+    parser.add_argument("--alpha", type=int, defult=8, help="Alpha scaling factor which controls the scale of weight changes to be applied.")
+
     args = parser.parse_args()
     return args
 
@@ -169,3 +214,5 @@ if __name__ == "__main__":
         fine_tune(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.freeze_encoder_layer, args.logs_dir)
     if args.use_adapters:
         fine_tune_with_adapters(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.number_of_adapters, args.reduction_factor, args.activation_function, args.mh_adapter, args.logs_dir)
+    if args.use_lora:
+        fine_tune_with_lora(args.model_name, args.learning_rate, args.epochs, args.weight_decay, train_split, eval_split, args.matrices, args.rank, args.alpha)
